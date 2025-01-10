@@ -1,17 +1,4 @@
 import streamlit as st
-import polars as pl
-import pandas as pd
-
-
-# st.header("House Price Prediction")
-
-# st.markdown(
-#     """
-#     - Hello World!
-#     """
-# )
-
-# st.logo('./images/banner.png', size = "large")
 
 introduction_1_page = st.Page("Introduction/1_What_Is_It.py", title = "What Is It")
 introduction_2_page = st.Page("Introduction/2_How_to_Use.py", title = "How to Use")
@@ -30,41 +17,5 @@ page = st.navigation(
         "Learn More": [developing_1_page, developing_2_page, developing_3_page]
     }
 )
-
-# dat = pl.read_csv('./dat/weight_diff.csv')
-
-# client_green = st.selectbox(
-#     'How many green land should near your house?',
-#     pd.DataFrame(dat.select(pl.col('green').unique()))
-# )
-
-# 'The green land near the house: ', client_green
-
-# @st.dialog("House Features")
-# def hou_feature():
-#     feature_select = st.selectbox(
-#         'What features would you concern in house location?',
-#         pd.Series(
-#             dat.drop(['hex_id', 'x', 'y', ''])
-#         )
-#     )
-
-
-# Add a selectbox to the sidebar:
-# add_selectbox = st.sidebar.selectbox(
-#     'How would you like to be contacted?',
-#     ('Email', 'Home phone', 'Mobile phone')
-# )
-
-# # Add a slider to the sidebar:
-# add_slider = st.sidebar.slider(
-#     'Select a range of values',
-#     0.0, 100.0, (25.0, 75.0)
-# )
-
-
-
-# if __name__ == '__main__':
-#     main()
 
 page.run()

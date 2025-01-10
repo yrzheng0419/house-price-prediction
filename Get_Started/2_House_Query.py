@@ -10,7 +10,6 @@ import geopandas as gpd
 import shapely.geometry
 
 import streamlit.components.v1 as components
-from streamlit_card import card
 from pandas.api.types import (
     is_categorical_dtype,
     is_datetime64_any_dtype,
