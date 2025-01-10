@@ -1,8 +1,0 @@
-streamlit==1.41.1
-pandas==2.2.3
-polars==1.17.1
-joblib==1.4.2
-pydeck==0.9.1
-h3-py==4.1.1
-geopandas==1.0.1
-shapely==2.0.6
