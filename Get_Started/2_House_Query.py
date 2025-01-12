@@ -286,7 +286,7 @@ sample_rent = dat.drop(['hex_id', 'mean_rent', 'neighbor_avg_ping', 'ping'], axi
 
 # raw buy price by float
 buy_price = model_buy.predict(sample_buy)
-buy_price = round(float(buy_price.item() * sample_buy.loc[index_on, 'area'].item()) * 10000)
+buy_price = round(float(buy_price.item() * sample_buy.loc[index_on, 'area'].item()))
 
 # raw rent price by float
 rent_price = model_rent.predict(sample_rent)
@@ -397,8 +397,23 @@ green_arc_layer = pdk.Layer(
     line_width_min_pixels=1,
 )
 
+# get building location
+build_point_dat = life_cycle_to_gpd([CENTER_HEX])
+build_point_layer = pdk.Layer(
+    "H3HexagonLayer",
+    build_point_dat,
+    pickable=False,
+    stroked=True,
+    filled=True,
+    extruded=False,
+    get_hexagon="hex_id",
+    get_fill_color=WHITE_RGB,
+    get_line_color=[255, 255, 255],
+    line_width_min_pixels=1,
+)
+
 def get_arcmap() -> pdk.Deck:
-    arc_list = [life_cycle_layer]
+    arc_list = [build_point_layer, life_cycle_layer]
     if st.session_state.medical_arc:
         arc_list.insert(0, medical_arc_layer)
     if st.session_state.school_arc:
@@ -547,9 +562,9 @@ with tab2:
             rpg_col, bustle_col = st.columns(2)
 
             with rpg_col:
-                rpg_value = round(float(sample_buy.loc[index_on, 'rich_poor_gap'].item()), 2)
+                rpg_value = float(sample_buy.loc[index_on, 'rich_poor_gap'].item())
                 st.metric(label = "貧富差距指數", value = rpg_value,
-                            help = "貧富差距越大可能代表當地市容較混亂，計算方式為每一個 h3 網格之年收入 IQR，其服從標準常態分布。")
+                            help = "貧富差距越大可能代表當地市容較混亂，計算方式為每一個 h3 網格之年收入 IQR。")
             with bustle_col:
                 st.metric(label = "鬧區指數", value = round(float(sample_buy.loc[index_on, 'urban_index'].item()), 2), help = "鬧區指數越大可能代表假日周邊較吵雜。")
 
@@ -566,22 +581,28 @@ with tab2:
             # ---------------------------------------周邊設施
             st.markdown("**周邊設施**")
 
-            def update_arc_state():
+            def update_medical_arc_state():
                 st.session_state.medical_arc = False if medical_arc else True
-                st.session_state.school_arc = False if medical_arc else True
-                st.session_state.green_arc = False if medical_arc else True
-                st.session_state.arc_map = get_arcmap()
+                st.session_state.arc_map = get_arcmap()  # 更新地圖
+
+            def update_school_arc_state():
+                st.session_state.school_arc = False if school_arc else True
+                st.session_state.arc_map = get_arcmap()  # 更新地圖
+
+            def update_green_arc_state():
+                st.session_state.green_arc = False if green_arc else True
+                st.session_state.arc_map = get_arcmap()  # 更新地圖
 
             with st.expander(f"💊 點擊查看周邊 **{medical_include.shape[0]}** 家醫療設施"):
-                medical_arc = st.toggle("地圖顯示", key = "medical_arc", on_change = update_arc_state)
+                medical_arc = st.toggle("地圖顯示", key = "medical_arc", on_change = update_medical_arc_state)
                 for i in medical_include.to_dict(orient = "records"):
                     st.text(f"• {i['name']}")
             with st.expander(f"🏫 點擊查看周邊 **{school_include.shape[0]}** 個教育設施"):
-                school_arc = st.toggle("地圖顯示", key = "school_arc", on_change = update_arc_state)
+                school_arc = st.toggle("地圖顯示", key = "school_arc", on_change = update_school_arc_state)
                 for i in school_include.to_dict(orient = "records"):
-                    st.text(f"• {i['name']}")
+                    st.text(f"• {i['school_name']}")
             with st.expander(f"🌳 點擊查看周邊 **{green_include.shape[0]}** 片綠地"):
-                green_arc = st.toggle("地圖顯示", key = "green_arc", on_change = update_arc_state)
+                green_arc = st.toggle("地圖顯示", key = "green_arc", on_change = update_green_arc_state)
                 for i in green_include.to_dict(orient = "records"):
                     st.text(f"• {i['name']}")
 
