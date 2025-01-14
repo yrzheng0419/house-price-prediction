@@ -1,6 +1,6 @@
 import streamlit as st
 
-introduction_1_page = st.Page("Introduction/1_What_Is_It.py", title = "What Is It")
+introduction_1_page = st.Page("Introduction/1_What_Is_It.py", title = "Realty Compass")
 introduction_2_page = st.Page("Introduction/2_How_to_Use.py", title = "How to Use")
 
 get_started_1_page = st.Page("Get_Started/1_Knowledge_Base.py", title = "Knowledge Base")
